@@ -8,11 +8,11 @@ namespace MVCStoreeWeb.Areas.Admin.Controllers
 {
     [Area("Admin")]
 
-    public class CategoriesController : Controller
+    public class ProductsController : Controller
     {
         private readonly AppDbContext context;
 
-        public CategoriesController(
+        public ProductsController(
            AppDbContext context
             )
         {
@@ -20,32 +20,33 @@ namespace MVCStoreeWeb.Areas.Admin.Controllers
         }
         public async Task<IActionResult> Index()
         {
-            var model = await context.Categories.ToListAsync();
+            var model = await context.Products.ToListAsync();
             return View(model);
         }
         [HttpGet]
         public async Task<IActionResult> Create()
         {
-             await Dropdowns();
-            return View(new Category {Enabled=true });
+            await Dropdowns();
+            return View(new Product{Enabled=true });
         }
-        [HttpPost]  
-        public async Task<IActionResult> Create(Category model)
+        [HttpPost]
+        public async Task<IActionResult> Create(Product model)
         {
             model.DateCreated= DateTime.UtcNow;
             model.Enabled = true;
-            context.Categories.Add(model);
+            context.Products.Add(model);
             try
             {
                 await context.SaveChangesAsync();
-                TempData["success"] = "kategori ekleme işlemi başarıyla tamamlanmıştır";
+                TempData["success"] = "Ürün ekleme işlemi başarıyla tamamlanmıştır";
 
                 return RedirectToAction(nameof(Index));
             }
             catch (Exception ex)
             {
                 await Dropdowns();
-                TempData["error"] = "Aynı isimde başka bir kategori olduğundan ekleme işlemi yapılamaz ";
+
+                TempData["error"] = "Aynı isimde başka bir Ürün olduğundan ekleme işlemi yapılamaz ";
                 return View(model);
             }
                  
@@ -54,24 +55,26 @@ namespace MVCStoreeWeb.Areas.Admin.Controllers
         public  async Task<IActionResult> Edit(Guid id)
         {
             await Dropdowns();
-            var model =  await context.Categories.FindAsync(id);
+
+            var model =  await context.Products.FindAsync(id);
             return View(model);
         }
         [HttpPost]
-        public async Task<IActionResult> Edit(Category model)
+        public async Task<IActionResult> Edit(Product model)
         {
           
-            context.Categories.Update(model);
+            context.Products.Update(model);
             try
             {
                 await context.SaveChangesAsync();
-                TempData["success"] = "Kategori güncelleme işlemi başarıyla tamamlanmıştır";
+                TempData["success"] = "Ürün güncelleme işlemi başarıyla tamamlanmıştır";
                 return RedirectToAction(nameof(Index));
             }
             catch (Exception ex) 
             {
                 await Dropdowns();
-                TempData["error"] = "Aynı isimde başka bir kategori olduğundan güncelleme işlemi yapılamaz ";
+
+                TempData["error"] = "Aynı isimde başka bir ürün olduğundan güncelleme işlemi yapılamaz ";
                 return View(model);
             }
 
@@ -79,12 +82,12 @@ namespace MVCStoreeWeb.Areas.Admin.Controllers
         [HttpGet]
         public async Task<IActionResult> Remove(Guid id)
         {
-            var model = await context.Categories.FindAsync(id);
-            context.Categories.Remove(model);
+            var model = await context.Products.FindAsync(id);
+            context.Products.Remove(model);
             try
             {
                 await context.SaveChangesAsync();
-                TempData["success"] = "Kategori silme işlemi başarıyla tamamlanmıştır";
+                TempData["success"] = "Ürün silme işlemi başarıyla tamamlanmıştır";
 
                 return RedirectToAction(nameof(Index));
 
@@ -92,18 +95,16 @@ namespace MVCStoreeWeb.Areas.Admin.Controllers
             catch (Exception)
             {
 
-                TempData["error"] = $"{model.Name} isimli kategori bir ya da daha fazla  kayıt ile ilişkili olduğu için  silme işlemi gerçekleştirelimiyor.";
+                TempData["error"] = $"{model.Name} isimli ürün bir ya da daha fazla  kayıt ile ilişkili olduğu için  silme işlemi gerçekleştirelimiyor.";
 
             }          
                 return RedirectToAction(nameof(Index));          
         }
-
         private async Task Dropdowns()
-        { 
-            ViewBag.Rayons = new SelectList(await context.Rayons.OrderBy(p=>p.Name).ToListAsync(), "Id", "Name");
-    
-        }
+        {
+            ViewBag.Categories = new SelectList(await context.Categories.Select(p=> new {p.Id, p.Name,RayonName=p.Rayon!.Name }).OrderBy(p=>p.Name).ToListAsync(), "Id", "Name", null,"RayonName");
 
+        }
     }
 
 }

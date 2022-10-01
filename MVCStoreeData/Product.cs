@@ -1,16 +1,52 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+using System.Security.Principal;
+using System.Xml.Linq;
 
 namespace MVCStoreData
 {
     public class Product:EntityBase
     {
-        
+        [Display(Name = "Ad")]
+        [Required(ErrorMessage ="{0} alanı boş bırakılamaz!")]
+        [DataType(DataType.Text)]
         public string Name { get; set; }
-        public decimal Price { get; set; }
-        public string? Descriptions { get; set; }
-        public decimal? DiscountRate { get; set; }
 
+        [Display(Name = "Açıklamalar")]
+        [Required(ErrorMessage = "{0} alanı boş bırakılamaz!")]
+        [DataType(DataType.MultilineText)]
+        public string? Descriptions { get; set; }
+
+        public decimal Price { get; set; }
+
+        public decimal? DiscountedPrice { get; set; }
+
+        [NotMapped]
+        [Display(Name = "Liste Fiyat")]
+        [Required(ErrorMessage = "{0} alanı boş bırakılamaz!")]
+        [DataType(DataType.Currency)]
+        [RegularExpression("^[0-9]+(,[0-9]+)?$", ErrorMessage ="Lütfen geçerli bir fiyat yazınız!")]
+        public string PriceText { get; set; }
+
+        [NotMapped] 
+        [Display(Name = "İndirimli Fiyat")]
+        [Required(ErrorMessage = "{0} alanı boş bırakılamaz!")]
+        [DataType(DataType.Currency)]
+        [RegularExpression("^[0-9]+(,[0-9]+)?$", ErrorMessage = "Lütfen geçerli bir fiyat yazınız!")]
+        public decimal DiscountedPriceText { get; set; }
+
+        [NotMapped]
+        public IEnumerable<IFormFile> Images { get; set; }
+        [NotMapped]
+        [Display(Name = "Kategori(ler)")]
+        [Required(ErrorMessage = "{0} alanı boş bırakılamaz!")]
+        public IEnumerable<Guid> CategoryIds { get; set; }
+
+        [NotMapped]
+        public int DiscountRate => (int)Math.Round((Price-(DiscountedPrice ?? Price)) * 100 / Price);    
         public virtual ICollection<Category> Categories { get; set; } = new HashSet<Category>();
         public virtual ICollection<ProductImage> ProductImages { get; set; } = new HashSet<ProductImage>();
         public virtual ICollection<Comment> Comments { get; set; } = new HashSet<Comment>();

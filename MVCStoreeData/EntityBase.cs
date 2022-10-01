@@ -14,6 +14,7 @@ namespace MVCStoreData
 
         [Display(Name = "Kayıt T.")]
         public DateTime DateCreated { get; set; }
+
         [Display(Name = "Durum")]
         public bool Enabled { get; set; }
     }

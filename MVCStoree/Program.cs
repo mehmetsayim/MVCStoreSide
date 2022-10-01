@@ -8,6 +8,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllersWithViews();
 
 builder.Services.AddDbContext<AppDbContext>(config => {
+    config.UseLazyLoadingProxies();
     var provider = builder.Configuration.GetValue<string>("DpProvider");
 
     switch (provider)

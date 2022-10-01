@@ -1,7 +1,7 @@
-﻿@model IEnumerable<Rayon>
+﻿@model IEnumerable<Category>
 
 @{
-    ViewData["Title"] = "Reyon Tanımları";
+    ViewData["Title"] = "Kategori Tanımları";
 }
 
 <div class=" d-flex">
@@ -25,7 +25,10 @@
                 @foreach (var item in Model)
                 {
                     <tr>
-                        <td>@item.Name</td>
+                        <td>@item.Name
+                        <br/>   
+                        <span class="small">@item.Rayon.Name</span>
+                        </td>
                         <td>@item.DateCreated.ToLocalTime().ToShortDateString()</td>
                         <td class ="text-center">
                             @if (item.Enabled )

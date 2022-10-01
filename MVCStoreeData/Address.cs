@@ -11,7 +11,7 @@ namespace MVCStoreData
         public int CityId { get; set; }
         public virtual City City { get; set; }
 
-        public ICollection<Order> Orders { get; set; }=new HashSet<Order>();
+        public virtual ICollection<Order> Orders { get; set; }=new HashSet<Order>();
     }
     public class AddressEntityTypeConfiguration : IEntityTypeConfiguration<Address>
     {
