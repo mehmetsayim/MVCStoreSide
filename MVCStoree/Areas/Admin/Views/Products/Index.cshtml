@@ -15,7 +15,10 @@
         <table class="table table-bordered">
             <thead>
                 <tr>
-                    <th width="50%">@Html.DisplayNameFor(model=>model.Name)</th>
+                    <th width="20%">@Html.DisplayNameFor(model=>model.Images)</th>
+                    <th width="30%">@Html.DisplayNameFor(model=>model.Name)</th>
+                    <th width="10%">@Html.DisplayNameFor(model=>model.PriceText)</th>
+                    <th width="10%">@Html.DisplayNameFor(model=>model.DiscountedPriceText)</th>
                     <th width="10%">@Html.DisplayNameFor(model=>model.DateCreated)</th>
                     <th width="10%">@Html.DisplayNameFor(model=>model.Enabled)</th>
                     <th width="10%">&nbsp;</th>
@@ -25,7 +28,29 @@
                 @foreach (var item in Model)
                 {
                     <tr>
-                        <td>@item.Name</td>
+                        <td>
+                            @if (item.ProductImages.Any())
+                            {
+                            <img src="data:image/jpeg;base64,  @Convert.ToBase64String(item.ProductImages.FirstOrDefault().Image)" height="60" />
+                                
+                            }
+                            else
+                            {
+                                <img src="~/images/no-image.png" height="60" />
+
+
+                            }
+                        </td>
+                        <td>
+                            @item.Name
+                           <p class="small">
+                                @string.Join(", ", @item.Categories.Select(p => p.Name))
+                           </p>
+                        </td>
+                        <td class="text-monospace text-right">@item.Price.ToString("c2")</td>
+                        <td class="text-monospace text-right">@item.DiscountedPrice.Value.ToString("c2")
+                         <p class="text-success small">%@item.DiscountRate</p>
+                        </td>
                         <td>@item.DateCreated.ToLocalTime().ToShortDateString()</td>
                         <td class ="text-center">
                             @if (item.Enabled )
@@ -38,7 +63,7 @@
                             }
                             
                         </td>
-                        <td class="text-center">
+                        <td class="text-center text-nowrap">
                             <a class="btn btn-link text-danger mvcstore-remove"  asp-action="Remove" asp-route-id="@item.Id">
                                <i class="fa fa-trash"></i> 
                             </a>

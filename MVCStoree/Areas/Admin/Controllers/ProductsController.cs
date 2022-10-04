@@ -2,6 +2,8 @@
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using MVCStoreData;
+using SixLabors.ImageSharp;
+using SixLabors.ImageSharp.Processing;
 using System.Data;
 
 namespace MVCStoreeWeb.Areas.Admin.Controllers
@@ -11,12 +13,15 @@ namespace MVCStoreeWeb.Areas.Admin.Controllers
     public class ProductsController : Controller
     {
         private readonly AppDbContext context;
+        private readonly IConfiguration configuration;
 
         public ProductsController(
-           AppDbContext context
+           AppDbContext context,
+           IConfiguration configuration
             )
         {
             this.context = context;
+            this.configuration = configuration;
         }
         public async Task<IActionResult> Index()
         {
@@ -27,13 +32,40 @@ namespace MVCStoreeWeb.Areas.Admin.Controllers
         public async Task<IActionResult> Create()
         {
             await Dropdowns();
-            return View(new Product{Enabled=true });
+            return View(new Product { Enabled = true });
         }
         [HttpPost]
         public async Task<IActionResult> Create(Product model)
         {
             model.DateCreated= DateTime.UtcNow;
             model.Enabled = true;
+            model.Price = decimal.Parse(model.PriceText);
+            model.DiscountedPrice = model.DiscountedPriceText != null ? decimal.Parse(model.DiscountedPriceText) : null;
+            var categories = await context.Categories.Where(p => model.CategoryIds.Any(q => q == p.Id)).ToListAsync();
+
+            if (model.Images is not null)
+            {
+                foreach (var file in model.Images)
+                {
+                    var image = await Image.LoadAsync(file.OpenReadStream());
+                    image.Mutate(p => {
+                        p.Resize(
+                            configuration.GetValue<int>("DefaultImageSize:Width"),
+                            configuration.GetValue<int>("DefaultImageSize:Height"));
+                    
+                    });
+
+                    using var ms = new MemoryStream();
+                    await image.SaveAsJpegAsync(ms);
+                     
+                    model.ProductImages.Add(new ProductImage
+                    {
+                        DateCreated = DateTime.UtcNow,
+                        Enabled = true,
+                        Image = ms.ToArray()
+                }); 
+                }
+            } 
             context.Products.Add(model);
             try
             {
@@ -46,7 +78,7 @@ namespace MVCStoreeWeb.Areas.Admin.Controllers
             {
                 await Dropdowns();
 
-                TempData["error"] = "Aynı isimde başka bir Ürün olduğundan ekleme işlemi yapılamaz ";
+                TempData["error"] = "Aynı isimde başka bir ürün olduğundan ekleme işlemi yapılamaz ";
                 return View(model);
             }
                  
@@ -95,14 +127,14 @@ namespace MVCStoreeWeb.Areas.Admin.Controllers
             catch (Exception)
             {
 
-                TempData["error"] = $"{model.Name} isimli ürün bir ya da daha fazla  kayıt ile ilişkili olduğu için  silme işlemi gerçekleştirelimiyor.";
+                TempData["error"] = $"{model.Name} isimli ürün bir ya da daha fazla  kayıt ile ilişkili olduğu için  silme işlemi gerçekleştirilemiyor.";
 
             }          
                 return RedirectToAction(nameof(Index));          
         }
         private async Task Dropdowns()
         {
-            ViewBag.Categories = new SelectList(await context.Categories.Select(p=> new {p.Id, p.Name,RayonName=p.Rayon!.Name }).OrderBy(p=>p.Name).ToListAsync(), "Id", "Name", null,"RayonName");
+            ViewBag.Categories = new SelectList(await context.Categories.Select(p=> new {p.Id, p.Name, RayonName = p.Rayon!.Name }).OrderBy(p=>p.Name).ToListAsync(), "Id", "Name", null,"RayonName");
 
         }
     }

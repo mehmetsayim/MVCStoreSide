@@ -22,7 +22,12 @@
     <input asp-for="DiscountedPriceText" class="form-control" />
     <span asp-validation-for="DiscountedPriceText"></span>
 </div>
-
+<div class="form-group">
+    <div>
+    <input type="file"  class="costum-file-input" id="Images" name="Images" multiple>
+        <label class="form-label" for="Images">Görsel Seçiniz...</label>
+    </div>
+</div>
 
 <div class="form-check">
     <input class="form-check-input" asp-for="Enabled">

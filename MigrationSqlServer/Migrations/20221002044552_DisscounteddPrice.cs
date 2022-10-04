@@ -4,7 +4,7 @@
 
 namespace MigrationSqlServer.Migrations
 {
-    public partial class DiscountedPrice : Migration
+    public partial class DisscounteddPrice : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {

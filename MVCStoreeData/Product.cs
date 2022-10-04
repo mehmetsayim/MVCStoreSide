@@ -36,7 +36,7 @@ namespace MVCStoreData
         [Required(ErrorMessage = "{0} alanı boş bırakılamaz!")]
         [DataType(DataType.Currency)]
         [RegularExpression("^[0-9]+(,[0-9]+)?$", ErrorMessage = "Lütfen geçerli bir fiyat yazınız!")]
-        public decimal DiscountedPriceText { get; set; }
+        public string DiscountedPriceText { get; set; }
 
         [NotMapped]
         public IEnumerable<IFormFile> Images { get; set; }
@@ -46,7 +46,7 @@ namespace MVCStoreData
         public IEnumerable<Guid> CategoryIds { get; set; }
 
         [NotMapped]
-        public int DiscountRate => (int)Math.Round((Price-(DiscountedPrice ?? Price)) * 100 / Price);    
+        public int DiscountRate => Price > 0 ? (int)Math.Round((Price-(DiscountedPrice ?? Price)) * 100 / Price) : 0;    
         public virtual ICollection<Category> Categories { get; set; } = new HashSet<Category>();
         public virtual ICollection<ProductImage> ProductImages { get; set; } = new HashSet<ProductImage>();
         public virtual ICollection<Comment> Comments { get; set; } = new HashSet<Comment>();

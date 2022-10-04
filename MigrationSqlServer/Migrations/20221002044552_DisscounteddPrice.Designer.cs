@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace MigrationSqlServer.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20221001191755_DiscountedPrice")]
-    partial class DiscountedPrice
+    [Migration("20221002044552_DisscounteddPrice")]
+    partial class DisscounteddPrice
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {

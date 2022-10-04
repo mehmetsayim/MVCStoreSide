@@ -38,7 +38,7 @@ namespace MVCStoreeWeb.Areas.Admin.Controllers
             try
             {
                 await context.SaveChangesAsync();
-                TempData["success"] = "kategori ekleme işlemi başarıyla tamamlanmıştır";
+                TempData["success"] = "Kategori ekleme işlemi başarıyla tamamlanmıştır";
 
                 return RedirectToAction(nameof(Index));
             }
