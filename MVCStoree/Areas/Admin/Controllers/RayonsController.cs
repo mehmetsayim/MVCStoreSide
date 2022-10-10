@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MVCStoreData;
 using System.Data;
@@ -6,6 +7,7 @@ using System.Data;
 namespace MVCStoreeWeb.Areas.Admin.Controllers
 {
     [Area("Admin")]
+    [Authorize(Roles = "Administrators")]
 
     public class RayonsController : Controller
     {
@@ -32,6 +34,7 @@ namespace MVCStoreeWeb.Areas.Admin.Controllers
         {
             model.DateCreated= DateTime.UtcNow;
             model.Enabled = true;
+
             context.Rayons.Add(model);
             try
             {
@@ -42,7 +45,7 @@ namespace MVCStoreeWeb.Areas.Admin.Controllers
             }
             catch (Exception ex)
             {
-                TempData["error"] = "Aynı isimde başka bir reyon olduğundan ekleme işlemi yapılamaz ";
+                TempData["error"] = "Beklenmedik hata, daha sonra tekrar deneyiniz! ";
                 return View(model);
             }
                  

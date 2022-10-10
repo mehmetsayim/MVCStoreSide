@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using MVCStoreData;
 using MVCStoreeWeb;
@@ -6,6 +7,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+builder.Services.AddControllersWithViews().AddRazorRuntimeCompilation();
 
 builder.Services.AddDbContext<AppDbContext>(config => {
     config.UseLazyLoadingProxies();
@@ -28,6 +30,22 @@ builder.Services.AddDbContext<AppDbContext>(config => {
     }
 });
 
+builder.Services.AddIdentity<ApplicationUser, ApplicationRole>(config =>
+{
+    config.Password.RequiredLength = 6;
+    config.Password.RequireLowercase = true;
+    config.Password.RequireUppercase = true;
+    config.Password.RequireNonAlphanumeric = true;
+    config.Password.RequiredUniqueChars = 3;
+        
+
+    config.SignIn.RequireConfirmedPhoneNumber = false;
+    config.SignIn.RequireConfirmedEmail = true;
+    config.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(3);
+
+})
+    .AddEntityFrameworkStores<AppDbContext>();
+builder.Services.AddAuthentication().AddCookie(); 
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -42,6 +60,8 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseRouting();
+ 
+app.UseAuthentication();
 
 app.UseAuthorization();
 
