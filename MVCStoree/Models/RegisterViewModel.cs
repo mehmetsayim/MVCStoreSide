@@ -17,7 +17,6 @@ namespace MVCStoreeWeb.Models
 
 
         [Display(Name = "Ad Soyad")]
-        [DataType(DataType.EmailAddress)]
         [Required(ErrorMessage = "{0} alanı boş bırakılamaz")]
         public string Name { get; set; }
 
@@ -37,6 +36,8 @@ namespace MVCStoreeWeb.Models
         public Genders Gender { get; set; }
 
         [Display(Name = "Doğum T.")]
+        [DataType(DataType.Date)]
+
         [Required(ErrorMessage = "{0} alanı boş bırakılamaz")]
         public DateTime BirthDate { get; set; }
 

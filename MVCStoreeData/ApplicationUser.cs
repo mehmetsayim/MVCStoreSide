@@ -1,12 +1,16 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using System.ComponentModel.DataAnnotations;
 
 namespace MVCStoreData
 {
     public enum Genders
-    { 
-       Male,Female
+    {
+        [Display(Name ="Erkek")]
+        Male,
+        [Display(Name ="Kadın")]
+        Female
     }
     public class ApplicationUser:IdentityUser<Guid>
     {

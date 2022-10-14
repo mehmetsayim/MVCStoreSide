@@ -2,6 +2,8 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using MVCStoreData;
 using MVCStoreeWeb;
+using NETCore.MailKit.Extensions;
+using NETCore.MailKit.Infrastructure.Internal;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -32,22 +34,46 @@ builder.Services.AddDbContext<AppDbContext>(config => {
 
 builder.Services.AddIdentity<ApplicationUser, ApplicationRole>(config =>
 {
-    config.Password.RequiredLength = 6;
-    config.Password.RequireLowercase = true;
-    config.Password.RequireUppercase = true;
-    config.Password.RequireNonAlphanumeric = true;
-    config.Password.RequiredUniqueChars = 3;
-        
+    config.Password.RequiredLength = builder.Configuration.GetValue<int>("PasswordSettings:RequiredLength");
+    config.Password.RequireLowercase = builder.Configuration.GetValue<bool>("PasswordSettings:RequireLowercase"); 
+    config.Password.RequireUppercase = builder.Configuration.GetValue<bool>("PasswordSettings:RequireUppercase");
+    config.Password.RequireNonAlphanumeric = builder.Configuration.GetValue<bool>("PasswordSettings:RequireNonAlphanumeric");
+    config.Password.RequiredUniqueChars = builder.Configuration.GetValue<int>("PasswordSe   ttings:RequiredUniqueChars");
 
     config.SignIn.RequireConfirmedPhoneNumber = false;
     config.SignIn.RequireConfirmedEmail = true;
+
+    config.Lockout.MaxFailedAccessAttempts = 3;    
     config.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(3);
 
 })
-    .AddEntityFrameworkStores<AppDbContext>();
-builder.Services.AddAuthentication().AddCookie(); 
-var app = builder.Build();
 
+
+
+    .AddEntityFrameworkStores<AppDbContext>()
+    .AddDefaultTokenProviders()
+    .AddErrorDescriber<CustomIdentityErrorDescriber>();
+builder.Services.AddAuthentication().AddCookie(); 
+
+builder.Services.AddMailKit(optionBuilder =>
+{
+    optionBuilder.UseMailKit(new MailKitOptions()
+    {
+        //get options from sercets.json
+        Server = "smtp.mailtrap.io",
+        Port = 2525,
+        SenderName = "MVCStore",
+        SenderEmail = "hesap@mvcstore.com",
+
+        // can be optional with no authentication 
+        Account = "3c89ea9378cf68",
+        Password = "afdf006b582b32",
+        // enable ssl or tls
+        Security = true
+    });
+});
+var app = builder.Build();
+ 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {
