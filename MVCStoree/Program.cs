@@ -60,16 +60,16 @@ builder.Services.AddMailKit(optionBuilder =>
     optionBuilder.UseMailKit(new MailKitOptions()
     {
         //get options from sercets.json
-        Server = "smtp.mailtrap.io",
-        Port = 2525,
-        SenderName = "MVCStore",
-        SenderEmail = "hesap@mvcstore.com",
+        Server =  builder.Configuration.GetValue<string>("EmailSettings:Server"),
+        Port = builder.Configuration.GetValue<int>("EmailSettings:Port"),
+        SenderName = builder.Configuration.GetValue<string>("EmailSettings:SenderName"),
+        SenderEmail = builder.Configuration.GetValue<string>("EmailSettings:SenderEmail"),
 
         // can be optional with no authentication 
-        Account = "3c89ea9378cf68",
-        Password = "afdf006b582b32",
+        Account = builder.Configuration.GetValue<string>("EmailSettings:Account"),
+        Password = builder.Configuration.GetValue<string>("EmailSettings:Password"),
         // enable ssl or tls
-        Security = true
+        Security = builder.Configuration.GetValue<bool>("EmailSettings:Security"),
     });
 });
 var app = builder.Build();

@@ -28,17 +28,7 @@
                         </li>
                     </ul>
                     <ul class="navbar-nav ms-auto">
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Account" asp-action="Register">
-                                <i class="fa fa-user-plus"></i> Yeni Üyelik
-                            </a>
-
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Account" asp-action="Logout">
-                                <i class="fa fa-power-off"></i> Çıkış
-                            </a>
-                        </li>
+                       @await Component.InvokeAsync("UserBar")
                     </ul>
                 </div>
             </div>
@@ -46,6 +36,7 @@
     </header>
     <div class="container mb-5">
         <main role="main" class="pb-3">
+            @(User.Identity.IsAuthenticated ?"logged":"not")
             @RenderBody()
         </main>
     </div>

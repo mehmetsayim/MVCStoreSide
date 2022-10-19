@@ -20,6 +20,6 @@ namespace MVCStoreeWeb.Models
         [Display(Name = "Oturum Açık Kalsın")]
         
         public bool RememberMe { get; set; }
-        public string ReturnUrl { get; set; }
+        public string? ReturnUrl { get; set; }
     }
 }

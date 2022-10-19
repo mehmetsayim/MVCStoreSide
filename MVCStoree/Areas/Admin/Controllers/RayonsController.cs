@@ -7,7 +7,7 @@ using System.Data;
 namespace MVCStoreeWeb.Areas.Admin.Controllers
 {
     [Area("Admin")]
-    [Authorize(Roles = "Administrators")]
+    [Authorize(Roles = "Administrators,ProductAdministrators")]
 
     public class RayonsController : Controller
     {
