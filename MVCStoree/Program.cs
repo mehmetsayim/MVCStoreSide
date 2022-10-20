@@ -99,4 +99,8 @@ app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
 
+app.MapControllerRoute(
+    name: "rayon",
+    pattern: "r/{name}/{id}", defaults: new {controller="Home", action="Rayon"});
+
 app.Run();

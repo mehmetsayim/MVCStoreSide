@@ -21,11 +21,12 @@
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
                     <ul class="navbar-nav flex-grow-1">
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="AboutUs">MVC Store Hakkında</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="ContactUs">Bize Ulaşın</a>
                         </li>
+                         
                     </ul>
                     <ul class="navbar-nav ms-auto">
                        @await Component.InvokeAsync("UserBar")
@@ -33,10 +34,11 @@
                 </div>
             </div>
         </nav>
+        @await Component.InvokeAsync("RayonBar")
     </header>
     <div class="container mb-5">
         <main role="main" class="pb-3">
-            @(User.Identity.IsAuthenticated ?"logged":"not")
+            
             @RenderBody()
         </main>
     </div>
@@ -50,5 +52,18 @@
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
     @await RenderSectionAsync("Scripts", required: false)
+    <script>
+        $(()=>{
+            $('body').on('mousedown', (e) => {
+                $('.category-panel').removeClass('show');
+            }); 
+            $('a.rayon-btn').on('click', (e) => {
+                $('.category-panel').removeClass('show');
+                const id =$(e.currentTarget).attr('data-category-id');
+                $('div#categoryPanel_'+ id).addClass('show');
+            });
+          
+        })
+    </script>
 </body>
 </html>

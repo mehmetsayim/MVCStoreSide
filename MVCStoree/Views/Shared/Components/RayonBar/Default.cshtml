@@ -1,0 +1,28 @@
+﻿@model IEnumerable<Rayon>
+<div class="bg-light py-2">
+    <nav class="container-fluid d-flex flex-nowrap align-items-center">
+     @foreach (var rayon in Model)
+        {
+           
+                <a href="#" class="btn btn-link text-decoration-none rayon-btn" data-category-id="@rayon.Id">
+                    @rayon.Name
+                </a>    
+        }
+    </nav>
+</div>
+
+<div class=" py-2 position-relative">    
+@foreach (var rayon in Model)
+{              
+    <div class="container position-absolute">
+            <div class="p-2 fade category-panel bg-white border" id="categoryPanel_@rayon.Id">
+               @foreach (var category in rayon.Categories.ToList())
+                {
+                    <div>
+                        <a href="#"> @category.Name</a>
+                    </div>
+                }
+            </div>
+        </div>
+    }   
+</div>
