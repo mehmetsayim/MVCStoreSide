@@ -1,6 +1,6 @@
 ﻿@model IEnumerable<Rayon>
 <div class="bg-light py-2">
-    <nav class="container-fluid d-flex flex-nowrap align-items-center">
+    <nav class="container d-flex flex-nowrap align-items-center">
      @foreach (var rayon in Model)
         {
            
@@ -14,8 +14,8 @@
 <div class=" py-2 position-relative">    
 @foreach (var rayon in Model)
 {              
-    <div class="container position-absolute">
-            <div class="p-2 fade category-panel bg-white border" id="categoryPanel_@rayon.Id">
+    <div class="container position-absolute "style="right:0; left:0; margin-top:-8px;">
+            <div class="p-2 fade category-panel w-100 bg-white border shadow" id="categoryPanel_@rayon.Id">
                @foreach (var category in rayon.Categories.ToList())
                 {
                     <div>
