@@ -41,6 +41,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\MigrationPgsql\MigrationNpgsql.csproj" />
     <ProjectReference Include="..\MigrationSqlServer\MigrationSqlServer.csproj" />
     <ProjectReference Include="..\MVCStoreeData\MVCStoreeData.csproj" />
   </ItemGroup>

@@ -9,7 +9,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
-builder.Services.AddControllersWithViews().AddRazorRuntimeCompilation();
+//builder.Services.AddControllersWithViews().AddRazorRuntimeCompilation();
 
 builder.Services.AddDbContext<AppDbContext>(config => {
     config.UseLazyLoadingProxies();
@@ -17,18 +17,21 @@ builder.Services.AddDbContext<AppDbContext>(config => {
 
     switch (provider)
     {
+        case "NpgSql":
+        
+            config.UseNpgsql(builder.Configuration.GetConnectionString("Npgsql"),
+        options => options.MigrationsAssembly("MigrationNpgsql")
+      );
+            AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
+            break;
         case "SqlServer":
+        default:
          config.UseSqlServer(
         builder.Configuration.GetConnectionString("SqlServer"),
         options => options.MigrationsAssembly("MigrationSqlServer")
         );
         break;
-        case "NpgSql":
-        default:
-            config.UseNpgsql(builder.Configuration.GetConnectionString("Npgsql"),
-        options => options.MigrationsAssembly("MigrationNpgsqlServer")
-      );
-            break;
+        
     }
 });
 
@@ -38,7 +41,7 @@ builder.Services.AddIdentity<ApplicationUser, ApplicationRole>(config =>
     config.Password.RequireLowercase = builder.Configuration.GetValue<bool>("PasswordSettings:RequireLowercase"); 
     config.Password.RequireUppercase = builder.Configuration.GetValue<bool>("PasswordSettings:RequireUppercase");
     config.Password.RequireNonAlphanumeric = builder.Configuration.GetValue<bool>("PasswordSettings:RequireNonAlphanumeric");
-    config.Password.RequiredUniqueChars = builder.Configuration.GetValue<int>("PasswordSe   ttings:RequiredUniqueChars");
+    config.Password.RequiredUniqueChars = builder.Configuration.GetValue<int>("PasswordSettings:RequiredUniqueChars");
 
     config.SignIn.RequireConfirmedPhoneNumber = false;
     config.SignIn.RequireConfirmedEmail = true;
@@ -47,13 +50,18 @@ builder.Services.AddIdentity<ApplicationUser, ApplicationRole>(config =>
     config.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(3);
 
 })
-
-
-
     .AddEntityFrameworkStores<AppDbContext>()
     .AddDefaultTokenProviders()
     .AddErrorDescriber<CustomIdentityErrorDescriber>();
+
+
+
+
 builder.Services.AddAuthentication().AddCookie(); 
+
+
+
+
 
 builder.Services.AddMailKit(optionBuilder =>
 {

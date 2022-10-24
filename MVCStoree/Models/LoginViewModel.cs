@@ -17,9 +17,11 @@ namespace MVCStoreeWeb.Models
         [DataType(DataType.Password)]
         [Required(ErrorMessage = "{0} alanı boş bırakılamaz")]        
         public string Password{ get; set; }
+
+
         [Display(Name = "Oturum Açık Kalsın")]
-        
         public bool RememberMe { get; set; }
+
         public string? ReturnUrl { get; set; }
     }
 }
